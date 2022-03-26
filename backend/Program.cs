@@ -33,7 +33,7 @@ namespace backend
                     .MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Warning)
                     .Enrich.FromLogContext()
                     .WriteTo.Console(outputTemplate: template)
-                    .WriteTo.File($"backend.log", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, outputTemplate: template)
+                    .WriteTo.File($"trustwho.log", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, outputTemplate: template)
                     .CreateLogger();
 
                 AppDomain.CurrentDomain.UnhandledException += (s,e) => {

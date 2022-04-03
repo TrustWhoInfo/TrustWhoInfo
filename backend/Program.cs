@@ -69,10 +69,14 @@ namespace backend
 
                     webBuilder.ConfigureAppConfiguration((builder,options) =>
                     {
-                        var path = Path.Combine(builder.HostingEnvironment.ContentRootPath, "../secrets/secrets.json");
-                        options.AddJsonFile(path, optional:true);
-                        path = Path.Combine(builder.HostingEnvironment.ContentRootPath, "../../secrets/secrets.json"); // 
-                        options.AddJsonFile(path, optional: true);
+                        if (builder.HostingEnvironment.IsDevelopment()) {
+                            var path = Path.Combine(builder.HostingEnvironment.ContentRootPath, "secrets/secrets.json");
+                            var b = File.Exists(path);
+                            options.AddJsonFile(path);
+                        } else {
+                            var path = Path.Combine(builder.HostingEnvironment.ContentRootPath, "/secrets/secrets.json");
+                            options.AddJsonFile(path);
+                        }
                     });
                     webBuilder.UseStartup<Startup>();
                 });

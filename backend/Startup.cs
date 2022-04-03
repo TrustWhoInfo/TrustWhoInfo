@@ -30,18 +30,11 @@ namespace backend
         {
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                var builder = new MySqlConnectionStringBuilder(Configuration.GetConnectionString("DefaultConnection"));
-                if (!builder.ContainsKey("Password") || string.IsNullOrEmpty((string?)builder["Password"]))
+                var connectionString = Configuration["Database:ConnectionString"];
+                var builder = new MySqlConnectionStringBuilder(connectionString);
+                if (string.IsNullOrEmpty(connectionString))
                 {
-                    var password = Configuration["Database:Password"];
-                    if (password != null)
-                    {
-                        builder.Password = Configuration["Database:Password"];
-                    }
-                    else
-                    {
-                        System.Environment.FailFast($"Missing database password");
-                    }
+                    System.Environment.FailFast($"Missing database connection string");
                 }                
                 options.UseMySql(builder.ToString(), new MySqlServerVersion("8.0.28"), b =>
                 {

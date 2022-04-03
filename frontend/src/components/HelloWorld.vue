@@ -1,14 +1,45 @@
 <template>
   <div>
     <div class="block block-even">
-      <h1>Trust Who?</h1>
-      <h4>Stop censorship via hiding information. Build your own network of trust</h4>
+      <div style='display: inline-block; margin-right: 24px;'>
+        <img src='/images/favicon.png' style='max-height: 100px' alt='Favicon' />
+      </div>
+      <div style='display: inline-block'>
+        <h1 style='margin:0;margin-bottom:8px;'>Trust Who?</h1>
+        <span>Stop censorship via hiding information. Choose who <span style='color: deepskyblue;font-weight: bold'>you</span> trust</span>
+      </div>
     </div>
     <div class="block">
       <h3>How this works?</h3>
       <div>
-        You select trust level for each news-maker and news-media. We calculate trust level of each news based on your preference and add personalized "Trust-meter" mark to every news.
+        You set trust level for each news-maker and media. We show "trust level" near every news based on your preference.
       </div>
+      <a style='margin-top: 12px;display:inline-block' @click.prevent='diagram=!diagram' href='#'>{{diagram ? 'Hide' : 'Show'}} horrible diagram</a>
+      <div class='diagram' v-if='diagram'>
+        <img src='images/diagram.png' style='max-width: 100%;' alt='Diagram that explains who Trust Level is built' />
+        <div style='#a900ff; border:solid 1px #a900ff; padding: 12px;width:max-content;margin-top: 24px;'>
+            Trust Level = 
+              <span style='color:gray'>function of</span> 
+              `media trust level`, `writer trust level`, `trust level assigned by news analytic`
+        </div>              
+        <div style='padding: 12px;'>All of above is selected by yourself and yourself only. No central censorship</div>
+      </div>
+
+    <hr style='margin-top: 32px;margin-bottom: 24px;' />
+
+    <span style='font-weight: bold; font-size: 1.2em; margin-bottom: 4px;display: inline-block;'>Chose who you trust</span>
+    <div>by moving slider left-right</div>
+    <br/>
+
+    <div class="block">
+      <div>
+        <template v-for='author in authors' :key='author.name'>
+          <author-avatar :user='author' @click='selectedUser=author' />
+        </template>
+      </div>
+      <person-card :user='selectedUser' v-if='selectedUser' />
+    </div>
+
       <div>
         <div id='your-code'>
           <span class='label'>Your profile code</span>
@@ -19,14 +50,9 @@
         </div>
       </div>
     </div>
-    <div class="block">
-      <div>
-        <template v-for='user in users' :key='user.avatar'>
-          <author-avatar :user='user' @click='selectedUser=user' />
-        </template>
-      </div>
-      <person-card :user='selectedUser' v-if='selectedUser' />
-    </div>
+
+    <hr />
+
   </div>
 </template>
 
@@ -45,9 +71,12 @@ export default {
   },
   data() {
     return {
+      diagram: false,
       selectedUser: null,
       generating: false,
       code: "",
+      media: [],
+      authors: [],
       users: [
         {
           avatar: "000001",
@@ -117,6 +146,18 @@ export default {
       ],
     }
   },
+  async mounted() {
+    const media = await Api.loadMedia();
+    this.media = media;
+    console.log("media", media);
+
+    const authors = await Api.loadAuthors();
+    authors.forEach(author => {
+      author.level = 0;
+    })
+    this.authors = authors;    
+    console.log("authors", authors);
+  },
   methods: {
     async generateCode() {
       this.generating = true;
@@ -180,4 +221,10 @@ export default {
       background: linear-gradient(0deg, rgb(147, 82, 252), rgb(114, 54, 253));
     }
 }
+
+  @media (min-width: 760px) {
+    .diagram {
+      padding: 32px;
+    }
+  }
 </style>

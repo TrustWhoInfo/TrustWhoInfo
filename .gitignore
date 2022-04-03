@@ -8,3 +8,4 @@ node_modules/
 secrets.json
 *.log
 *.db
+backend/appsettings.Development.json

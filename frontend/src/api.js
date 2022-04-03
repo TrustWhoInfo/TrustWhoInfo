@@ -64,12 +64,32 @@ export default class Api {
     static generateCode(users) {
         console.log("Generating code", users);
         const request = {
-            Entities: users.map(u=>{return {
-                Id: u.name,
-                Level: u.level,
-                Levels: u.levels,
+            entities: users.map(u=>{return {
+                id: u.name,
+                level: u.level,
+                levels: u.levels,
             };}),
         };
         return this.postData('/api/generateCode', request);
+    }
+
+    static postNews(article) {    
+        return this.postData('/api/postNews', article);
+    }
+
+    static createAuthor(author) {    
+        return this.postData('/api/createAuthor', author);
+    }
+
+    static searchAuthor(pattern) {    
+        return this.postData('/api/searchPattern', pattern);
+    }
+
+    static loadMedia(language) {
+        return this.postData('/api/media', [language ?? "*"]);
+    }
+
+    static loadAuthors(language) {
+        return this.postData('/api/authors', [language ?? "*"]);
     }
 } 

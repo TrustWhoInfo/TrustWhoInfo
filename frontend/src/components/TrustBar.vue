@@ -4,7 +4,9 @@
       <input type="range" min="-100" max="100" :value="level" @change="levelUpdate" class="slider">
       <div class='bar'></div>
     </div>
-    <div class='label' :style="{color: color(level), textShadow: '1px 1px 1px gray'}">{{label(level)}}</div>    
+    <div class='label' :style="{color: color(level), textShadow: '1px 1px 1px gray'}">
+      {{level>0?"+":""}}{{level}} <span style='font-size:0.9em'>{{label(level)}}</span>
+    </div>    
   </div>
 </template>
 
@@ -21,7 +23,7 @@ export default {
     },
     label(level) {
       if (level > 80) {
-        return "Truth-speaker";
+        return "Truth";
       }
       else if (level > 50) {
         return "Trust";
@@ -38,9 +40,10 @@ export default {
       else if (level > -80) {
         return "Distrust";
       }
-      else {
-        return "Fake-maker";
+      else if (level >= -100) {
+        return "False";
       }
+      return "" + level;
     },
     color(level) {
       const normalized = (level + 100) / 200; // 0..1      
@@ -70,6 +73,12 @@ export default {
   top: -4px;
   left: 2px;
   margin-bottom: 4px;
+}
+
+
+.label {
+  display: inline-block;
+  margin: 0 -16px;
 }
 
 .trust-bar.horizontal {

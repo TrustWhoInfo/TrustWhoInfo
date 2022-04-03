@@ -1,7 +1,7 @@
 <template>
   <div class="author-avatar">
     <div class='avatar'>
-      <img :src='`/images/avatar/${user.avatar}.jpg`' width='118' height='144' />
+      <img :src='`${user.image}`' width='118' />
     </div>
     <div class='names'>
       <div class='name'>{{user.name}}</div>
@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import TrustBar from './TrustBar.vue'
+import TrustBar from './TrustBar.vue';
+
 export default {
   name: 'AuthorAvatar',
   components: {
@@ -56,6 +57,7 @@ export default {
   display: flex; 
   flex-direction: column;
   justify-content: center;
+  margin: 0 -12px;
 }
 
 .name {

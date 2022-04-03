@@ -1,0 +1,37 @@
+{
+    "name": "Trust Who Info",
+    "version": "1.0.0",
+    "description": "Extension allows to setup your own trust network, e.g. you could finely tune trust levels for each media, author etc, and then receive effective trust level for each news piece based on your settings",
+    "manifest_version": 3,
+    "author": "Trust Who Info",
+    "homepage_url": "https://trustwho.info",
+    "permissions": ["storage", "activeTab", "scripting", "declarativeContent"],
+    "host_permissions": ["https://localhost:7071/api/*"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"]
+        }
+    ],
+    "icons": {
+        "16": "images/weights16.png",
+        "32": "images/weights32.png",
+        "64": "images/weights64.png",
+        "128": "images/weights128.png"
+    },
+    "action":{
+        "default_popup": "index.html",
+        "default_title": "Trust Who Info",
+        "default_icon": {
+            "16": "images/weights16.png",
+            "32": "images/weights32.png",
+            "64": "images/weights64.png",
+            "128": "images/weights128.png"
+        }        
+    }
+}
+
+

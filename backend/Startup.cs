@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.HttpOverrides;
+using System.Text.Json;
+using MySql.Data.MySqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend
 {
@@ -25,9 +28,29 @@ namespace backend
 
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                var builder = new MySqlConnectionStringBuilder(Configuration.GetConnectionString("DefaultConnection"));
+                if (!builder.ContainsKey("Password") || string.IsNullOrEmpty((string?)builder["Password"]))
+                {
+                    var password = Configuration["Database:Password"];
+                    if (password != null)
+                    {
+                        builder.Password = Configuration["Database:Password"];
+                    }
+                    else
+                    {
+                        System.Environment.FailFast($"Missing database password");
+                    }
+                }                
+                options.UseMySql(builder.ToString(), new MySqlServerVersion("8.0.28"), b =>
+                {
+                    b.EnableRetryOnFailure();
+                });
 
+                // uncomment to log sql queries into console
+                //options.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
+            });
 
             services.Configure<ForwardedHeadersOptions>(option => {
                 option.ForwardedHeaders = ForwardedHeaders.All;
@@ -37,13 +60,12 @@ namespace backend
             services.AddControllers();
             services.AddCors(options =>
             {
-                options.AddPolicy("VueCorsPolicy", builder =>
+                options.AddPolicy("Any", builder =>
                 {
                     builder
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()
-                        .WithOrigins("https://localhost:7071");
+                        .AllowAnyOrigin();
                 });
             });
             services
@@ -59,7 +81,7 @@ namespace backend
                 .AddJsonOptions(options => {
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                     options.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
-                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });                
         }
 
@@ -70,7 +92,7 @@ namespace backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("VueCorsPolicy");
+            app.UseCors("Any");
 
             dbContext.Database.EnsureCreated();
             app.UseAuthentication();

@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 using System.Text.Json;
 using MySql.Data.MySqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
+using backend.Hubs;
 
 namespace backend
 {
@@ -76,6 +78,10 @@ namespace backend
                     options.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });                
+            services.AddSignalR();
+            services.AddSingleton<Game>();
+            services.AddSingleton<Processor>();
+            services.AddSingleton<World>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext dbContext)
@@ -91,7 +97,10 @@ namespace backend
             app.UseAuthentication();
             app.UseMvc();
             app.UseRouting();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints => { 
+                endpoints.MapControllers(); 
+                endpoints.MapHub<WorldGameHub>("/worldGame");
+            });
             app.UseSpaStaticFiles();
             app.UseSpa(configuration: builder =>
             {

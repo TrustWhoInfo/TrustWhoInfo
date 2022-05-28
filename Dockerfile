@@ -10,7 +10,7 @@ EXPOSE 5000
 EXPOSE 5001
 
 RUN apt-get update && apt-get install -y libgdiplus
-RUN echo dotnet trustwho.dll \${Node} \> /logs/trustwho-\${Node}.log > /root/run.sh
+RUN echo dotnet worldgame.dll \${Node} \> /logs/worldgame-\${Node}.log > /root/run.sh
 RUN chmod +x /root/run.sh
 
 ENTRYPOINT cd /app && /root/run.sh

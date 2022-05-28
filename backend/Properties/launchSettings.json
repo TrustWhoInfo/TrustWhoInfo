@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "trustwho": {
+    "worldgame": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

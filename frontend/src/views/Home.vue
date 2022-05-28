@@ -1,16 +1,24 @@
 <template>
   <div class="home">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <game />
   </div>
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
+import Game from '@/components/main.vue'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    "game": Game,
   }
 }
 </script>
+
+
+<style lang='scss'>
+  .home {
+    width: 100%;
+    height: 100%;
+  }
+</style>

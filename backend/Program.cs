@@ -33,7 +33,7 @@ namespace backend
                     .MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Warning)
                     .Enrich.FromLogContext()
                     .WriteTo.Console(outputTemplate: template)
-                    .WriteTo.File($"trustwho.log", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, outputTemplate: template)
+                    .WriteTo.File($"worldgame.log", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, outputTemplate: template)
                     .CreateLogger();
 
                 AppDomain.CurrentDomain.UnhandledException += (s,e) => {
@@ -77,6 +77,10 @@ namespace backend
                             var path = Path.Combine(builder.HostingEnvironment.ContentRootPath, "/secrets/secrets.json");
                             options.AddJsonFile(path);
                         }
+                    }).ConfigureServices(services => {
+                        services.AddHostedService<UpdatesService>();
+                        services.AddHostedService<PlayerCommandProcessor>();
+                        services.AddHostedService<WorldProcessor>();                        
                     });
                     webBuilder.UseStartup<Startup>();
                 });

@@ -12,16 +12,6 @@ const routes = [
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
-  {
-    path: '/post',
-    name: 'Post News',
-    component: () => import(/* webpackChunkName: "post" */ '../views/PostNews.vue')
-  }, 
-  {
-    path: '/create-author',
-    name: 'Create author',
-    component: () => import(/* webpackChunkName: "newAuthor" */ '../views/CreateAuthor.vue')
-  },
 ]
 
 const router = createRouter({
